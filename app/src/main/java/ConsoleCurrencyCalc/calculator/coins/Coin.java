@@ -15,4 +15,9 @@ public class Coin implements Comparable<Coin> {
             throw new IllegalArgumentException("Cannot compare coins with different sign.");
         return Double.compare(val, coin.getVal());
     }
+
+    @Override
+    public String toString() {
+        return String.format("%.2f %c", val, sign);
+    }
 }
