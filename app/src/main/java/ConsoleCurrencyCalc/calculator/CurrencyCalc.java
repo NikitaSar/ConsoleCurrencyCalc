@@ -12,7 +12,18 @@ import java.util.Set;
 @Builder
 public class CurrencyCalc {
     private static final Set<Character> specChars = Set.of('+', '-', '(', ')');
-
+    private static final Map<Character, CalcOperation> operations = Map.of(
+            '+', (var1, var2) -> {
+                if (var1.getSign() != var2.getSign())
+                    throw new IllegalArgumentException("Cannot add two currency with different signs.");
+                return new Coin(var1.getVal() + var2.getVal(), var1.getSign());
+            },
+            '-', (var1, var2) -> {
+                if (var1.getSign() != var2.getSign())
+                    throw new IllegalArgumentException("Cannot sub two currency with different signs.");
+                return new Coin(var1.getVal() - var2.getVal(), var1.getSign());
+            }
+    );
 
     @Singular
     private final List<CoinParser> parsers;
@@ -79,14 +90,15 @@ public class CurrencyCalc {
                          continue;
                      }
                  }
-                 switch (ch) {
-                     case '+':
-                     case '-':
-                        // call operator(left, right, ch)
-                     break;
-                     default:
-                        throw new IllegalArgumentException(String.format("Unknown symbol: '%c', pos: %d", ch, i));
-                 }
+                 var operation = operations.get(ch);
+                 if (null == operation)
+                     throw new IllegalArgumentException(String.format("Unknown symbol: '%c', pos: %d", ch, i));
+                 if (null == left)
+                    left = parse(token);
+                 var right = parse(expr, ++i);
+                 i = expr.length() - 1;
+                 left = operation.apply(left, right);
+                 continue;
             }
             buff.append(ch);
         }

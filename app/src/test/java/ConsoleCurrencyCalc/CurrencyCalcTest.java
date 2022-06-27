@@ -78,6 +78,18 @@ public class CurrencyCalcTest {
     }
 
     @Test
+    public void sum10DollarsAnd110Rubles_differentSigns() {
+        assertThrows(IllegalArgumentException.class, () -> calc.calculate("$10.0 + 110.0p"),
+                "Cannot add two currency with different signs.");
+    }
+
+    @Test
+    public void sum10DollarsAnd110Rubles_success() {
+        var actual = calc.calculate("$10.0 + toDollar(110.0p)");
+        assertEquals(21.0, actual.getVal());
+    }
+
+    @Test
     public void sum10DollarsAnd100Rubles_success() {
         var actual = calc.calculate("$10 + toDollar(100.0p)");
         assertEquals(20.0, actual.getVal());
