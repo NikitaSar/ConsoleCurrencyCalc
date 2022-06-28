@@ -8,6 +8,6 @@ public class EuroParser implements CoinParser {
     public Coin parse(String token) {
         if (token.charAt(0) != 'e')
             return null;
-        return new Coin(Double.parseDouble(token.substring(1)), 'e', "EU");
+        return new Coin(Double.parseDouble(token.substring(1)), 'e', "EUR");
     }
 }

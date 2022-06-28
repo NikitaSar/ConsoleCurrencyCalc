@@ -8,6 +8,7 @@ import ConsoleCurrencyCalc.calculator.coins.Coin;
 import ConsoleCurrencyCalc.exchange.ExchangeService;
 import ConsoleCurrencyCalc.exchange.FakeExchangedService;
 import ConsoleCurrencyCalc.parsers.DollarParser;
+import ConsoleCurrencyCalc.parsers.EuroParser;
 import ConsoleCurrencyCalc.parsers.RubleParser;
 import lombok.RequiredArgsConstructor;
 
@@ -51,6 +52,7 @@ public class App {
                     .builder()
                     .parser(new DollarParser())
                     .parser(new RubleParser())
+                    .parser(new EuroParser())
                     .customFunction("toDollar", (vars) -> {
                         var coin = vars[0];
                         if (coin.getSign() == '$')
@@ -63,7 +65,14 @@ public class App {
                         if (coin.getSign() == 'p')
                             return coin;
                         var rate = currencies.get(coin.getCode() + "RUB");
-                        return new Coin(vars[0].getVal() * rate, 'p', "RUB");
+                        return new Coin(coin.getVal() * rate, 'p', "RUB");
+                    })
+                    .customFunction("toEuro", (vars) -> {
+                        var coin = vars[0];
+                        if (coin.getSign() == 'e')
+                            return coin;
+                        var rate = currencies.get(coin.getCode() + "EUR");
+                        return new Coin(coin.getVal() * rate, 'e', "EUR");
                     })
                     .build();
             new App(System.in, System.out, calc).run();

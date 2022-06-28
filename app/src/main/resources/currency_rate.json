@@ -6,5 +6,21 @@
   {
     "currPair": "RUBUSD",
     "cost": 0.018739
+  },
+  {
+    "currPair": "USDEUR",
+    "cost": 0.94411
+  },
+  {
+    "currPair": "EURUSD",
+    "cost": 1.06
+  },
+  {
+    "currPair": "RUBEUR",
+    "cost": 0.01784
+  },
+  {
+    "currPair": "EURRUB",
+    "cost": 56.05
   }
 ]
