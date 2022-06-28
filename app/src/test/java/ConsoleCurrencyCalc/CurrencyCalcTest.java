@@ -18,10 +18,10 @@ public class CurrencyCalcTest {
                 .parser(new DollarParser())
                 .parser(new RubleParser())
                 .customFunction("toRuble", (args) -> {
-                    return new Coin(args[0].getVal() * 10, 'p');
+                    return new Coin(args[0].getVal() * 10, 'p', "RUB");
                 })
                 .customFunction("toDollar", (args) -> {
-                    return new Coin(args[0].getVal() / 10, '$');
+                    return new Coin(args[0].getVal() / 10, '$', "USD");
                 })
                 .customFunction("min", (args) -> {
                     return args[0].compareTo(args[1]) < 0 ? args[0] : args[1];
@@ -67,6 +67,13 @@ public class CurrencyCalcTest {
     @Test
     public void toDollar_success() {
         var actual = calc.calculate("toDollar(75.0p)");
+        assertEquals(7.5, actual.getVal());
+        assertEquals('$', actual.getSign());
+    }
+
+    @Test
+    public void toDollar_cyrillic_success() {
+        var actual = calc.calculate("toDollar(75.0р)");
         assertEquals(7.5, actual.getVal());
         assertEquals('$', actual.getSign());
     }
