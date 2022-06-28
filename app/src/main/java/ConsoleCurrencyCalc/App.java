@@ -13,6 +13,7 @@ import ConsoleCurrencyCalc.parsers.RubleParser;
 import lombok.RequiredArgsConstructor;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
@@ -74,6 +75,9 @@ public class App {
                         var rate = currencies.get(coin.getCode() + "EUR");
                         return new Coin(coin.getVal() * rate, 'e', "EUR");
                     })
+                    .customFunction("min", (vars) -> Arrays.stream(vars)
+                            .reduce((var1, var2) -> var1.compareTo(var2) < 0 ? var1 : var2)
+                            .orElse(null))
                     .build();
             new App(System.in, System.out, calc).run();
         }
