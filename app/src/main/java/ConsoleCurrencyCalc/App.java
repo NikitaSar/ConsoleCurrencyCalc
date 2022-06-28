@@ -4,6 +4,9 @@
 package ConsoleCurrencyCalc;
 
 import ConsoleCurrencyCalc.calculator.CurrencyCalc;
+import ConsoleCurrencyCalc.calculator.coins.Coin;
+import ConsoleCurrencyCalc.exchange.ExchangeService;
+import ConsoleCurrencyCalc.exchange.FakeExchangedService;
 import ConsoleCurrencyCalc.parsers.DollarParser;
 import ConsoleCurrencyCalc.parsers.RubleParser;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +23,20 @@ public class App {
     public void run() throws IOException {
         try(var scanner = new Scanner(inputStream)) {
             try (var writer = new OutputStreamWriter(outputStream)) {
+                writer.write("Type formula and press enter. For exit ctrl + z.\n");
+                writer.flush();
                 String line = null;
                 while (scanner.hasNextLine() && !(line = scanner.nextLine()).equals("")) {
-                    var res = calc.calculate(line);
-                    writer.write(String.format("%s = %s\n", line, res.toString()));
-                    writer.flush();
+                    try {
+                        var res = calc.calculate(line);
+                        writer.write(String.format("%s = %s\n", line, res.toString()));
+                    }
+                    catch (Exception e) {
+                        writer.write(e.getMessage() + "\n");
+                    }
+                    finally {
+                        writer.flush();
+                    }
                 }
             }
         }
@@ -32,10 +44,27 @@ public class App {
 
     public static void main(String[] args) {
         try {
+            ExchangeService service = new FakeExchangedService();
+            var currencies = service.getCurrencyRate();
+
             var calc = CurrencyCalc
                     .builder()
                     .parser(new DollarParser())
                     .parser(new RubleParser())
+                    .customFunction("toDollar", (vars) -> {
+                        var coin = vars[0];
+                        if (coin.getSign() == '$')
+                            return coin;
+                        var rate = currencies.get(coin.getCode() + "USD");
+                        return new Coin(coin.getVal() * rate, '$', "USD");
+                    })
+                    .customFunction("toRuble", (vars) -> {
+                        var coin = vars[0];
+                        if (coin.getSign() == 'p')
+                            return coin;
+                        var rate = currencies.get(coin.getCode() + "RUB");
+                        return new Coin(vars[0].getVal() * rate, 'p', "RUB");
+                    })
                     .build();
             new App(System.in, System.out, calc).run();
         }

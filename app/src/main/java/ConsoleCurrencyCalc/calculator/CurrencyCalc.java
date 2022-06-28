@@ -16,12 +16,12 @@ public class CurrencyCalc {
             '+', (var1, var2) -> {
                 if (var1.getSign() != var2.getSign())
                     throw new IllegalArgumentException("Cannot add two currency with different signs.");
-                return new Coin(var1.getVal() + var2.getVal(), var1.getSign());
+                return new Coin(var1.getVal() + var2.getVal(), var1.getSign(), var1.getCode());
             },
             '-', (var1, var2) -> {
                 if (var1.getSign() != var2.getSign())
                     throw new IllegalArgumentException("Cannot sub two currency with different signs.");
-                return new Coin(var1.getVal() - var2.getVal(), var1.getSign());
+                return new Coin(var1.getVal() - var2.getVal(), var1.getSign(), var1.getCode());
             }
     );
 
