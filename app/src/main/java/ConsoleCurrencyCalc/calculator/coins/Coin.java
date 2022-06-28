@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class Coin implements Comparable<Coin> {
     private final double val;
     private final char sign;
+    private final String code;
 
     @Override
     public int compareTo(Coin coin) {
