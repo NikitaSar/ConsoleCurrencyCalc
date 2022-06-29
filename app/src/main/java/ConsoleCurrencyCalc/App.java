@@ -76,7 +76,7 @@ public class App {
                         return new Coin(coin.getVal() * rate, 'e', "EUR");
                     })
                     .customFunction("min", (vars) -> Arrays.stream(vars)
-                            .reduce((var1, var2) -> var1.compareTo(var2) < 0 ? var1 : var2)
+                            .min(Coin::compareTo)
                             .orElse(null))
                     .build();
             new App(System.in, System.out, calc).run();
